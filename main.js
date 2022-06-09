@@ -88,3 +88,7 @@ let gpxTrack = new L.GPX("../data/22.gpx", {
         dashArray: [2,5]
     }
 }).addTo(overlays.gpx);
+
+gpxTrack.on("loaded", function(evt){
+    map.fitBounds(evt.target.getBounds())
+})
