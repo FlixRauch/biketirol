@@ -90,5 +90,24 @@ let gpxTrack = new L.GPX("../data/22.gpx", {
 }).addTo(overlays.gpx);
 
 gpxTrack.on("loaded", function(evt){
-    map.fitBounds(evt.target.getBounds())
+    let gpxLayer = evt.target;
+    map.fitBounds(gpxLayer.getBounds())
+    let popup = `<h3>${gpxLayer.get_name()}</h3>
+    <ul>
+        <li>Streckenlänge: ${(gpxLayer.get_distance()/1000).toFixed()}km </li>
+        <li>tiefster Punkt:  ${gpxLayer.get_elevation_min().toFixed()}m </li>
+        <li>höchster Punkt: ${gpxLayer.get_elevation_max().toFixed()}m </li>
+        <li>Höhenmeter bergauf: ${gpxLayer.get_elevation_gain().toFixed()}m </li>
+        <li>Höhenmeter bergab: ${gpxLayer.get_elevation_loss().toFixed()}m </li>`;
+        gpxLayer.bindPopup(popup);
+})
+
+let elevationControl = L.control.elevation({
+    time:false,
+    elevationDiv:"#profile",
+    theme: 'bike-tirol',
+    height: 200,
+}).addTo(map);
+gpxTrack.on("addline", function(evt) {
+    elevationControl.addData(evt.line);
 })
